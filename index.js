@@ -33,9 +33,12 @@ app.post('/api/restaurant', (req, res) => {
   const schema = {
     restaurant: Joi.string().min(8).required(),
   };
-
   const result = Joi.validate(req.body,schema);
-  console.log(result);
+  if (result.error) {
+    res.status(404).send(result.error.details[0].message);
+    return;
+  };
+
   const recieve = {
     id: restaurants.length +1,
     restaurant: req.body.restaurant
