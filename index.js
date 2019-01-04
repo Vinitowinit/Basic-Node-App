@@ -29,13 +29,9 @@ app.get('/api/restaurant/:id', (req, res) => {
 
 
 app.post('/api/restaurant', (req, res) => {
-  //Need a schema to use Joi...like a tester
-  const schema = {
-    restaurant: Joi.string().min(8).required(),
-  };
-  const result = Joi.validate(req.body,schema);
-  if (result.error) {
-    res.status(404).send(result.error.details[0].message);
+  const result = handleValidation(req.body).error
+  if (result) {
+    res.status(404).send(result.details[0].message);
     return;
   };
 
@@ -46,6 +42,40 @@ app.post('/api/restaurant', (req, res) => {
   restaurants.push(recieve);
   res.send(restaurants)
 });
+
+
+app.put('/api/restaurant/:id', (req,res) => {
+  //See if course exists
+  const restaur = restaurants.find(rest => rest.id === parseInt(req.params.id));
+  //Course not exist return 404
+  if (!restaur) {
+    res.status(400).send("Not identifiable in the present");
+    return;
+  };
+  //validate
+  const result = handleValidation(req.body).error
+  if (result) {
+    res.status(404).send(result.details[0].message);
+    return;
+  };
+  //Update Restaurant values
+  restaur.restaurant = req.body.restaurant;
+  //Return Update Course
+  res.send(restaur);
+  // Return restaurant value
+  console.log(restaurants);
+
+});
+
+function handleValidation (restaurant) {
+  //Need a schema to use Joi...like a tester
+  const schema = {
+    restaurant: Joi.string().min(8).required(),
+  };
+  // Input Validation of String 8 or more letters long
+  const result = Joi.validate(restaurant,schema);
+  return result;
+  };
 
 
 const port= process.env.PORT || 3000
