@@ -1,0 +1,6 @@
+{
+  "restaurant":  "Production of Basic_Node_App",
+  "type": {
+    "host" : "prod-node-server"
+  }
+}
